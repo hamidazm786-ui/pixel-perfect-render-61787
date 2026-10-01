@@ -4,6 +4,7 @@ import { LayoutDashboard, Cctv, Boxes, Bell, Sparkles, Settings, Search, PanelLe
 import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/store";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { CopilotChat } from "./copilot";
 import { StatusDot, severityTone, Tag } from "./primitives";
@@ -30,49 +31,50 @@ export function Logo({ collapsed }: { collapsed?: boolean }) {
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const { alerts, theme, setTheme, copilotOpen, setCopilotOpen } = useStore();
   const unread = alerts.filter((a) => !a.acknowledged);
   const navigate = useNavigate();
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
-      <aside className={cn("hidden shrink-0 flex-col border-r bg-sidebar transition-[width] duration-200 md:flex", collapsed ? "w-14" : "w-56")}>
+      <aside id="desktop-sidebar" className={cn("hidden w-56 shrink-0 flex-col border-r bg-sidebar md:flex", !sidebarOpen && "md:hidden")}>
         <div className="flex h-14 items-center border-b px-3.5">
-          <Logo collapsed={collapsed} />
+          <Logo />
         </div>
         <nav className="flex-1 space-y-0.5 p-2">
           {nav.map((n) => (
             <Link
               key={n.to}
               to={n.to}
-              title={collapsed ? n.label : undefined}
               className="group flex h-8 items-center gap-2.5 rounded-md px-2.5 text-[13px] text-sidebar-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
               activeProps={{ className: "bg-sidebar-accent !text-sidebar-accent-foreground font-medium" }}
             >
               <n.icon className="size-4 shrink-0" />
-              {!collapsed && <span className="flex-1">{n.label}</span>}
-              {!collapsed && n.to === "/alerts" && unread.length > 0 && (
+              <span className="flex-1">{n.label}</span>
+              {n.to === "/alerts" && unread.length > 0 && (
                 <span className="rounded bg-critical/15 px-1.5 font-mono text-[10px] text-critical">{unread.length}</span>
               )}
             </Link>
           ))}
         </nav>
         <div className="border-t p-2">
-          {!collapsed && (
-            <div className="mb-2 rounded-md border bg-surface px-2.5 py-2 text-[11px]">
-              <div className="flex items-center gap-1.5 text-muted-foreground"><StatusDot state="live" pulse /> Pipeline running</div>
-              <div className="mt-1 font-mono text-muted-foreground">7/8 cams · YOLOv8 · 21 fps</div>
-            </div>
-          )}
-          <button onClick={() => setCollapsed(!collapsed)} className="flex h-8 w-full items-center gap-2.5 rounded-md px-2.5 text-[13px] text-muted-foreground hover:bg-sidebar-accent">
-            {collapsed ? <PanelLeft className="size-4" /> : <><PanelLeftClose className="size-4" /> Collapse</>}
-          </button>
+          <div className="rounded-md border bg-surface px-2.5 py-2 text-[11px]">
+            <div className="flex items-center gap-1.5 text-muted-foreground"><StatusDot state="live" pulse /> Pipeline running</div>
+            <div className="mt-1 font-mono text-muted-foreground">7/8 cams · YOLOv8 · 21 fps</div>
+          </div>
         </div>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex h-14 shrink-0 items-center gap-3 border-b bg-background px-4">
+          <Button variant="ghost" size="icon" className="hidden size-8 shrink-0 md:inline-flex" onClick={() => setSidebarOpen((open) => !open)} aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"} aria-expanded={sidebarOpen} aria-controls="desktop-sidebar" title={sidebarOpen ? "Close sidebar" : "Open sidebar"}>
+            {sidebarOpen ? <PanelLeftClose /> : <PanelLeft />}
+          </Button>
+          <Button variant="ghost" size="icon" className="size-8 shrink-0 md:hidden" onClick={() => setMobileSidebarOpen(true)} aria-label="Open sidebar" title="Open sidebar">
+            <PanelLeft />
+          </Button>
           <div className="md:hidden"><Logo collapsed /></div>
           <div className="flex h-8 max-w-md flex-1 items-center gap-2 rounded-md border bg-surface px-2.5 text-muted-foreground">
             <Search className="size-3.5" />
@@ -139,6 +141,21 @@ export function AppShell({ children }: { children: ReactNode }) {
           ))}
         </nav>
       </div>
+
+      <Sheet open={mobileSidebarOpen} onOpenChange={setMobileSidebarOpen}>
+        <SheetContent side="left" className="w-64 bg-sidebar p-0">
+          <SheetHeader className="flex h-14 justify-center border-b px-4 text-left">
+            <SheetTitle><Logo /></SheetTitle>
+          </SheetHeader>
+          <nav className="space-y-0.5 p-2" aria-label="Main navigation">
+            {nav.map((n) => (
+              <Link key={n.to} to={n.to} onClick={() => setMobileSidebarOpen(false)} className="flex h-9 items-center gap-2.5 rounded-md px-2.5 text-[13px] text-sidebar-foreground hover:bg-sidebar-accent" activeProps={{ className: "bg-sidebar-accent font-medium text-sidebar-accent-foreground" }}>
+                <n.icon className="size-4" />{n.label}
+              </Link>
+            ))}
+          </nav>
+        </SheetContent>
+      </Sheet>
 
       <Sheet open={copilotOpen} onOpenChange={setCopilotOpen}>
         <SheetContent className="flex w-full flex-col gap-0 p-0 sm:max-w-md">
