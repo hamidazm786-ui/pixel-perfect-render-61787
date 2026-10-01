@@ -43,7 +43,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     let n = 100;
     const id = setInterval(() => {
-      const p = products[Math.floor(Math.random() * products.length)];
+      const p = products[Math.floor(Math.random() * products.length)]!;
       const delta = Math.random() > 0.8 ? Math.ceil(Math.random() * 6) : -Math.ceil(Math.random() * 3);
       const from = Math.max(p.count, 3);
       const ev: FeedEvent = {

@@ -62,7 +62,7 @@ const hist = (end: number, drift: number[]) => {
   let v = end;
   for (let i = drift.length - 1; i >= 0; i--) {
     out.unshift(v);
-    v += drift[i];
+    v += drift[i] ?? 0;
   }
   return out;
 };
