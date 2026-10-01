@@ -6,10 +6,10 @@ import { products, zones, ago, type ReconStatus } from "@/lib/mock-data";
 import { PageHeader, ReconBadge, CountDisplay, Panel, Sparkline, EmptyState, Tag } from "@/components/app/primitives";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
-type Search = { q?: string; zone?: string; status?: ReconStatus; sku?: string };
+type Search = { q?: string | undefined; zone?: string | undefined; status?: ReconStatus | undefined; sku?: string | undefined };
 
 export const Route = createFileRoute("/_console/inventory")({
-  validateSearch: (s: Record<string, unknown>): Search => ({
+  validateSearch: (s: { q?: unknown; zone?: unknown; status?: unknown; sku?: unknown }): Search => ({
     q: typeof s.q === "string" && s.q ? s.q : undefined,
     zone: typeof s.zone === "string" ? s.zone : undefined,
     status: s.status === "verified" || s.status === "pending" || s.status === "flagged" ? s.status : undefined,
