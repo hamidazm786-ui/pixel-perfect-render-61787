@@ -78,7 +78,9 @@ export function CopilotChat({ compact }: { compact?: boolean }) {
   const [thinking, setThinking] = useState(false);
   const end = useRef<HTMLDivElement>(null);
 
-  useEffect(() => end.current?.scrollIntoView({ behavior: "smooth" }), [msgs, thinking]);
+  useEffect(() => {
+    end.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+  }, [msgs, thinking]);
 
   const send = (q: string) => {
     if (!q.trim() || thinking) return;
