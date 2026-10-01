@@ -64,7 +64,7 @@ function SettingsPage() {
                   <td className="px-4 py-2.5">{t}</td>
                   {channels.map((c) => (
                     <td key={c} className="px-4 py-2.5 text-center">
-                      <Switch checked={prefs[`${t}|${c}`]} onCheckedChange={(v) => setPrefs({ ...prefs, [`${t}|${c}`]: v })} />
+                      <Switch checked={!!prefs[`${t}|${c}`]} onCheckedChange={(v) => setPrefs({ ...prefs, [`${t}|${c}`]: v })} />
                     </td>
                   ))}
                 </tr>
