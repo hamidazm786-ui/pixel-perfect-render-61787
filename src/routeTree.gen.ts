@@ -10,33 +10,117 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ConsoleRouteImport } from './routes/_console'
+import { Route as ConsoleAlertsRouteImport } from './routes/_console.alerts'
+import { Route as ConsoleCopilotRouteImport } from './routes/_console.copilot'
+import { Route as ConsoleDashboardRouteImport } from './routes/_console.dashboard'
+import { Route as ConsoleInventoryRouteImport } from './routes/_console.inventory'
+import { Route as ConsoleSettingsRouteImport } from './routes/_console.settings'
+import { Route as ConsoleShelvesRouteImport } from './routes/_console.shelves'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConsoleRoute = ConsoleRouteImport.update({
+  id: '/_console',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConsoleAlertsRoute = ConsoleAlertsRouteImport.update({
+  id: '/alerts',
+  path: '/alerts',
+  getParentRoute: () => ConsoleRoute,
+} as any)
+const ConsoleCopilotRoute = ConsoleCopilotRouteImport.update({
+  id: '/copilot',
+  path: '/copilot',
+  getParentRoute: () => ConsoleRoute,
+} as any)
+const ConsoleDashboardRoute = ConsoleDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => ConsoleRoute,
+} as any)
+const ConsoleInventoryRoute = ConsoleInventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
+  getParentRoute: () => ConsoleRoute,
+} as any)
+const ConsoleSettingsRoute = ConsoleSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => ConsoleRoute,
+} as any)
+const ConsoleShelvesRoute = ConsoleShelvesRouteImport.update({
+  id: '/shelves',
+  path: '/shelves',
+  getParentRoute: () => ConsoleRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/alerts': typeof ConsoleAlertsRoute
+  '/copilot': typeof ConsoleCopilotRoute
+  '/dashboard': typeof ConsoleDashboardRoute
+  '/inventory': typeof ConsoleInventoryRoute
+  '/settings': typeof ConsoleSettingsRoute
+  '/shelves': typeof ConsoleShelvesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/alerts': typeof ConsoleAlertsRoute
+  '/copilot': typeof ConsoleCopilotRoute
+  '/dashboard': typeof ConsoleDashboardRoute
+  '/inventory': typeof ConsoleInventoryRoute
+  '/settings': typeof ConsoleSettingsRoute
+  '/shelves': typeof ConsoleShelvesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_console': typeof ConsoleRouteWithChildren
+  '/_console/alerts': typeof ConsoleAlertsRoute
+  '/_console/copilot': typeof ConsoleCopilotRoute
+  '/_console/dashboard': typeof ConsoleDashboardRoute
+  '/_console/inventory': typeof ConsoleInventoryRoute
+  '/_console/settings': typeof ConsoleSettingsRoute
+  '/_console/shelves': typeof ConsoleShelvesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/alerts'
+    | '/copilot'
+    | '/dashboard'
+    | '/inventory'
+    | '/settings'
+    | '/shelves'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/alerts'
+    | '/copilot'
+    | '/dashboard'
+    | '/inventory'
+    | '/settings'
+    | '/shelves'
+  id:
+    | '__root__'
+    | '/'
+    | '/_console'
+    | '/_console/alerts'
+    | '/_console/copilot'
+    | '/_console/dashboard'
+    | '/_console/inventory'
+    | '/_console/settings'
+    | '/_console/shelves'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ConsoleRoute: typeof ConsoleRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +132,82 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_console': {
+      id: '/_console'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof ConsoleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_console/alerts': {
+      id: '/_console/alerts'
+      path: '/alerts'
+      fullPath: '/alerts'
+      preLoaderRoute: typeof ConsoleAlertsRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
+    '/_console/copilot': {
+      id: '/_console/copilot'
+      path: '/copilot'
+      fullPath: '/copilot'
+      preLoaderRoute: typeof ConsoleCopilotRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
+    '/_console/dashboard': {
+      id: '/_console/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof ConsoleDashboardRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
+    '/_console/inventory': {
+      id: '/_console/inventory'
+      path: '/inventory'
+      fullPath: '/inventory'
+      preLoaderRoute: typeof ConsoleInventoryRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
+    '/_console/settings': {
+      id: '/_console/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof ConsoleSettingsRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
+    '/_console/shelves': {
+      id: '/_console/shelves'
+      path: '/shelves'
+      fullPath: '/shelves'
+      preLoaderRoute: typeof ConsoleShelvesRouteImport
+      parentRoute: typeof ConsoleRoute
+    }
   }
 }
 
+interface ConsoleRouteChildren {
+  ConsoleAlertsRoute: typeof ConsoleAlertsRoute
+  ConsoleCopilotRoute: typeof ConsoleCopilotRoute
+  ConsoleDashboardRoute: typeof ConsoleDashboardRoute
+  ConsoleInventoryRoute: typeof ConsoleInventoryRoute
+  ConsoleSettingsRoute: typeof ConsoleSettingsRoute
+  ConsoleShelvesRoute: typeof ConsoleShelvesRoute
+}
+
+const ConsoleRouteChildren: ConsoleRouteChildren = {
+  ConsoleAlertsRoute: ConsoleAlertsRoute,
+  ConsoleCopilotRoute: ConsoleCopilotRoute,
+  ConsoleDashboardRoute: ConsoleDashboardRoute,
+  ConsoleInventoryRoute: ConsoleInventoryRoute,
+  ConsoleSettingsRoute: ConsoleSettingsRoute,
+  ConsoleShelvesRoute: ConsoleShelvesRoute,
+}
+
+const ConsoleRouteWithChildren =
+  ConsoleRoute._addFileChildren(ConsoleRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ConsoleRoute: ConsoleRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
